@@ -51,12 +51,14 @@ function handleVolume() {
 
     const areaBottom = shoelace(coordsBottom);
     const areaTop = shoelace(coordsTop);
-    const volume = height * (areaBottom + areaTop) / 2;
+    //const volume = height * (areaBottom + areaTop) / 2;
+    const volume = (height / 3) * (areaBottom + Math.sqrt(areaBottom * areaTop) + areaTop); // Frustum formula
 
     output.textContent = `Volume: ${volume.toFixed(2)} m³`;
   });
 }
 
+// --- CSV READING HELPERS ---
 function readCsv(file, callback) {
   const reader = new FileReader();
   reader.onload = e => {
@@ -84,6 +86,7 @@ function parseCsv(text) {
   })).filter(pt => !isNaN(pt.x) && !isNaN(pt.y));
 }
 
+// --- SHOE-LACE FORMULA ---
 function shoelace(points) {
   let sum1 = 0;
   let sum2 = 0;
