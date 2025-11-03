@@ -1,39 +1,87 @@
-document.getElementById("fileInput").addEventListener("change", handleFile);
+document.getElementById("areaButton").addEventListener("click", handleArea);
+document.getElementById("volumeButton").addEventListener("click", handleVolume);
 
-function handleFile(event) {
-  const file = event.target.files[0];
-  const output = document.getElementById("output");
+// --- AREA CALCULATION ---
+function handleArea() {
+  const file = document.getElementById("areaFile").files[0];
+  const output = document.getElementById("areaOutput");
 
-if (!file) {
-    output.textContent = "Please upload a CSV file.";
+  if (!file) {
+    output.textContent = "Upload eerst een CSV bestand.";
     return;
-}
+  }
 
-const reader = new FileReader();
-  reader.onload = function (e) {
-    const text = e.target.result;
-
-    // Split into rows, handle both comma and semicolon CSVs
-    const rows = text.trim().split(/\r?\n/).map(r => r.split(/[;,]/));
-
-    // Assuming columns: fid, Meetpunt, X, Y
-    const coords = rows.slice(1).map(r => ({
-      x: parseFloat(r[2]),
-      y: parseFloat(r[3])
-    })).filter(pt => !isNaN(pt.x) && !isNaN(pt.y));
-
+  readCsv(file, coords => {
     if (coords.length < 3) {
-      output.textContent = "Not enough valid points to form an area.";
+      output.textContent = "Geen valide data.";
       return;
     }
 
     const areaSqM = shoelace(coords);
     const areaKm2 = areaSqM / 1_000_000;
+    output.textContent = `Oppervlakte: ${areaSqM.toFixed(2)} m² (${areaKm2.toFixed(4)} km²)`;
+  });
+}
 
-    output.textContent = `Calculated area: ${areaSqM.toFixed(2)} m² (${areaKm2.toFixed(4)} km²)`;
+// --- VOLUME CALCULATION ---
+function handleVolume() {
+  const fileBottom = document.getElementById("bottomFile").files[0];
+  const fileTop = document.getElementById("topFile").files[0];
+  const height = parseFloat(document.getElementById("heightInput").value);
+  const output = document.getElementById("volumeOutput");
+
+  if (!fileBottom || !fileTop) {
+    output.textContent = "Upload eerst de CSV bestanden.";
+    return;
+  }
+  if (isNaN(height) || height <= 0) {
+    output.textContent = "Vul een geldige hoogte in.";
+    return;
+  }
+
+  // Read both files asynchronously
+  Promise.all([
+    readCsvAsync(fileBottom),
+    readCsvAsync(fileTop)
+  ]).then(([coordsBottom, coordsTop]) => {
+    if (coordsBottom.length < 3 || coordsTop.length < 3) {
+      output.textContent = "Geen valide data in een van de bestanden.";
+      return;
+    }
+
+    const areaBottom = shoelace(coordsBottom);
+    const areaTop = shoelace(coordsTop);
+    const volume = height * (areaBottom + areaTop) / 2;
+
+    output.textContent = `Volume: ${volume.toFixed(2)} m³`;
+  });
+}
+
+function readCsv(file, callback) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const coords = parseCsv(text);
+    callback(coords);
   };
-
   reader.readAsText(file);
+}
+
+function readCsvAsync(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(parseCsv(e.target.result));
+    reader.readAsText(file);
+  });
+}
+
+function parseCsv(text) {
+  const rows = text.trim().split(/\r?\n/).map(r => r.split(/[;,]/));
+  // Assuming columns: fid, Meetpunt, X, Y
+  return rows.slice(1).map(r => ({
+    x: parseFloat(r[2]),
+    y: parseFloat(r[3])
+  })).filter(pt => !isNaN(pt.x) && !isNaN(pt.y));
 }
 
 function shoelace(points) {

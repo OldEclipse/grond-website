@@ -3,15 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSV Area Calculator</title>
+  <title>Oppervlakte & Volume berekenen</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>CSV Area Calculator</h1>
+  <h1>Oppervlakte & Volume berekenen</h1>
 
-  <input type="file" id="fileInput" accept=".csv" />
+  <!-- AREA SECTION -->
+  <section class="calculator">
+    <h2>Oppervlakte berekenen</h2>
+    <label>Grondvlak:</label><br />
+    <input type="file" id="areaFile" accept=".csv" />
+    <button id="areaButton">Bereken</button>
+    <p id="areaOutput">Upload een CSV voor het grondvlak en klik op bereken.</p>
+  </section>
 
-  <p id="output">Upload a CSV file to calculate the area.</p>
+  <hr />
+
+  <!-- VOLUME SECTION -->
+  <section class="calculator">
+    <h2>Volume berekenen</h2>
+    <label>Grondvlak:</label><br />
+    <input type="file" id="bottomFile" accept=".csv" /><br /><br />
+
+    <label>Bovenvlak:</label><br />
+    <input type="file" id="topFile" accept=".csv" /><br /><br />
+
+    <label>Hoogteverschil tussen grondvlak en bovenvlak:</label><br />
+    <input type="number" id="heightInput" step="any" placeholder="Hoogte (in meters)" /><br /><br />
+
+    <button id="volumeButton">Bereken</button>
+    <p id="volumeOutput">Upload een CSV voor het grondvlak en voor het bovenvlak, geef het hoogteverschil aan en klik op bereken.</p>
+  </section>
 
   <script src="script.js"></script>
 </body>
