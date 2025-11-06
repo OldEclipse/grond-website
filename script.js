@@ -62,27 +62,48 @@ function handleVolume() {
 function readCsv(file, callback) {
   const reader = new FileReader();
   reader.onload = e => {
-    const text = e.target.result;
-    const coords = parseCsv(text);
-    callback(coords);
+    try {
+      const text = e.target.result;
+      const coords = parseCsv(text);
+      callback(coords);
+    } catch (error) {
+      callback([]);
+      document.getElementById("areaOutput").textContent = "Fout: " + error.message;
+    }
   };
   reader.readAsText(file);
 }
 
 function readCsvAsync(file) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = e => resolve(parseCsv(e.target.result));
+    reader.onload = e => {
+      try {
+        resolve(parseCsv(e.target.result));
+      } catch (error) {
+        document.getElementById("volumeOutput").textContent = "Fout: " + error.message;
+        resolve([]);
+      }
+    };
     reader.readAsText(file);
   });
 }
 
 function parseCsv(text) {
   const rows = text.trim().split(/\r?\n/).map(r => r.split(/[;,]/));
-  // Assuming columns: fid, Meetpunt, X, Y
+  
+  // Find X and Y column indices from header
+  const header = rows[0].map(col => col.toLowerCase().trim());
+  const xIndex = header.findIndex(col => col === 'x');
+  const yIndex = header.findIndex(col => col === 'y');
+  
+  if (xIndex === -1 || yIndex === -1) {
+    throw new Error('Kolommen X en Y niet gevonden in de header.');
+  }
+  
   return rows.slice(1).map(r => ({
-    x: parseFloat(r[2]),
-    y: parseFloat(r[3])
+    x: parseFloat(r[xIndex]),
+    y: parseFloat(r[yIndex])
   })).filter(pt => !isNaN(pt.x) && !isNaN(pt.y));
 }
 
