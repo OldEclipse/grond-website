@@ -1,5 +1,6 @@
 document.getElementById("areaButton").addEventListener("click", handleArea);
 document.getElementById("volumeButton").addEventListener("click", handleVolume);
+document.getElementById("weightButton").addEventListener("click", handleWeight);
 
 // --- AREA CALCULATION ---
 function handleArea() {
@@ -55,7 +56,30 @@ function handleVolume() {
     const volume = (height / 3) * (areaBottom + Math.sqrt(areaBottom * areaTop) + areaTop); // Frustum formula
 
     output.textContent = `Volume: ${volume.toFixed(2)} m³`;
+    
+    // Set the calculated volume as the default value in the weight calculator
+    document.getElementById("volumeInput").value = volume.toFixed(2);
   });
+}
+
+// --- WEIGHT CALCULATION ---
+function handleWeight() {
+  const volume = parseFloat(document.getElementById("volumeInput").value);
+  const density = parseFloat(document.getElementById("densityInput").value);
+  const output = document.getElementById("weightOutput");
+
+  if (isNaN(volume) || volume <= 0) {
+    output.textContent = "Vul een geldig volume in.";
+    return;
+  }
+
+  if (isNaN(density) || density <= 0) {
+    output.textContent = "Vul een geldige dichtheid in.";
+    return;
+  }
+
+  const weight = volume * density; // in ton
+  output.textContent = `Gewicht: ${weight.toFixed(2)} ton`;
 }
 
 // --- CSV READING HELPERS ---

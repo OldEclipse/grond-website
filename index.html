@@ -14,7 +14,9 @@
     <h2>Oppervlakte berekenen</h2>
     <label>Grondvlak:</label><br />
     <input type="file" id="areaFile" accept=".csv" />
+
     <button id="areaButton">Bereken</button>
+
     <p id="areaOutput">Upload een CSV voor het grondvlak en klik op bereken.</p>
   </section>
 
@@ -33,7 +35,23 @@
     <input type="number" id="heightInput" step="any" placeholder="Hoogte (in meters)" /><br /><br />
 
     <button id="volumeButton">Bereken</button>
+
     <p id="volumeOutput">Upload een CSV voor het grondvlak en voor het bovenvlak, geef het hoogteverschil aan en klik op bereken.</p>
+  </section>
+
+  <!-- DICHTHEID SECTION -->
+  <section class="calculator">
+    <h2>Gewicht berekenen</h2>
+
+    <label>Volume:</label><br />
+    <input type="number" id="volumeInput" step="any" placeholder="Volume (in m3)" /><br /><br />
+
+    <label>Dichtheid:</label><br />
+    <input type="number" id="densityInput" step="any" placeholder="Dichtheid (in ton/m3)" /><br /><br />
+
+    <button id="weightButton">Bereken</button>
+
+    <p id="weightOutput">Geef het volume en de dichtheid aan en klik op bereken.</p>
   </section>
 
   <script src="script.js"></script>
