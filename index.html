@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oppervlakte & Volume berekenen</title>
+  <title>Oppervlakte, Volume en Gewicht berekenen</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -36,7 +36,11 @@
 
     <button id="volumeButton">Bereken</button>
 
-    <p id="volumeOutput">Upload een CSV voor het grondvlak en voor het bovenvlak, geef het hoogteverschil aan en klik op bereken.</p>
+    <p id="volumeOutput">Upload een CSV voor het grondvlak en voor het bovenvlak, 
+      geef het hoogteverschil aan en klik op bereken. Als geen hoogteverschil wordt
+      opgegeven, wordt het gemiddelde hoogteverschil tussen het grondvlak en bovenvlak gebruikt.
+    </p>
+    <p id="gridOutput"></p>
   </section>
 
   <!-- DICHTHEID SECTION -->
